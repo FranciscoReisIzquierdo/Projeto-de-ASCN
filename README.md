@@ -6,5 +6,5 @@ Projeto realizado no âmbito da UC de Aplicações e Serviços de Computação e
 * [Francisco Novo](https://github.com/xiconovo)
 * [Francisco Izquierdo](https:/github.com/FranciscoReisIzquierdo)
 * [João Carvalho](https://github.com/joao4carvalho)
-* [Mário Correira](https://github.com/mariopcorreia)
+* [Mário Correia](https://github.com/mariopcorreia)
 * [Tiago Ribeiro](https://github.com/tiagoribeiro2001)

@@ -20,4 +20,5 @@ all:
 
 
   # Additional variables
-  # ...
+  
+  ghost_image_version : ghost:5.14.1

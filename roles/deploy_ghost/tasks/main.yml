@@ -1,0 +1,36 @@
+# Criar um endereco GCP e guarda como variavel
+- name: Create GCP address
+  google.cloud.gcp_compute_address:
+    name: ghostaddress
+    region: us-central1
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_auth_kind }}"
+    service_account_file: "{{ gcp_cred_file }}"
+    state: present
+  register: address
+
+# Atualiza as variaveis necessarias para o ghost
+- name: Update variables
+  set_fact:
+    ghost_ip: "{{ address }}"
+    ghost_port: 80
+
+# Servico para expor o mysql
+- name: Create service mysql
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: mysql-service # logical name of the service, which will also become the DNS name of the service when it is created.
+        labels:
+          app: mysql
+          tier: database
+      spec:
+        type: ClusterIP
+        selector:
+          app: mysql
+        ports:
+          - targetPort: 3306 # port that containers are listening on
+            port: 3306 # port number exposed internally in the cluster

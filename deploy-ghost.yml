@@ -1,6 +1,24 @@
 ---
 # Playbook to deploy Ghost and its components
 
+- name: Create namespace
+  hosts: localhost
+  gather_facts: false
+  roles:
+      - create_namespace
+
+- name: Create MySQL secret
+  hosts: localhost
+  gather_facts: false
+  tasks:  
+    - command: kubectl create -f secret.yml -n "{{ namespace }}"
+
+- name: Deploy MySQL
+  hosts: localhost
+  gather_facts: false
+  roles:
+      - deploy_mysql
+
 - name: Deploy Ghost
   hosts: localhost
   gather_facts: false

@@ -19,12 +19,16 @@ all:
   ghost_port: <GHOST_PORT>         # Needs to be updated
 
 
+  # Ghost variables
+  g_port: 2368
+  ghost_version : ghost:5.14.1
+
   # MySQL variables
   mysql_port: 3306
-  database: mysql
+  database: ghostdb
   database_user: ghost
 
   # Additional variables
   
   namespace: namespace-ghost
-  ghost_image_version : ghost:5.14.1
+ 

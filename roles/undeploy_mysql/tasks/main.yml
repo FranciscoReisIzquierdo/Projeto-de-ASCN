@@ -1,0 +1,5 @@
+- name: Undeploy mysql volume
+  shell: kubectl delete pvc -n "{{ namespace }}" mysql-pv-claim
+
+- name: Delete namespace
+  shell: kubectl delete namespace "{{ namespace }}"

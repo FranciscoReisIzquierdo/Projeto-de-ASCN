@@ -13,14 +13,9 @@
   tasks:  
     - command: kubectl create -f secret.yml -n "{{ namespace }}"
 
-- name: Deploy MySQL
+- name: Deploy MySQL and Ghost
   hosts: localhost
   gather_facts: false
   roles:
       - deploy_mysql
-
-- name: Deploy Ghost
-  hosts: localhost
-  gather_facts: false
-  roles:
       - deploy_ghost

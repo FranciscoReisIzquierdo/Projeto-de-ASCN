@@ -1,7 +1,7 @@
 # Criar um endereco GCP e guarda como variavel
 - name: Create GCP address
   google.cloud.gcp_compute_address:
-    name: ghostaddress
+    name: address-ghost
     region: us-central1
     project: "{{ gcp_project }}"
     auth_kind: "{{ gcp_auth_kind }}"
@@ -12,8 +12,85 @@
 # Atualiza as variaveis necessarias para o ghost
 - name: Update variables
   set_fact:
-    ghost_ip: "{{ address }}"
+    ghost_ip: "{{ address.address }}"
     ghost_port: 80
 
+# Servico para expor o Ghost
+- name: Create service Ghost
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: ghost-service # logical name of the service, which will also become the DNS name of the service when it is created.
+        namespace: "{{ namespace }}"
+        labels:
+          app: ghost-service
+          tier: application
+      spec:
+        type: LoadBalancer
+        loadBalancerIP: "{{ address.address }}"
+        selector:
+          app: ghost
+        ports:
+          - targetPort: "{{ g_port }}" # port that containers are listening on
+            port: 80 # port number exposed internally in the cluster
+ 
+# Deployment do pod Ghost
+- name: Deployment for Ghost
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: ghost
+        namespace: "{{ namespace }}"
+        labels:
+          app: ghost
+      spec:
+        selector:
+          matchLabels:
+            app: ghost
+        template:
+          metadata:
+            labels:
+              app: ghost
+          spec:
+            containers:
+            - name: ghost
+              image: "{{ ghost_version }}"
+              env:
+              - name: database__connection__database 
+                value: "{{ database }}"
+              - name: database__connection__user
+                value: "{{ database_user }}"
+              - name: database__connection__password
+                valueFrom:
+                  secretKeyRef:
+                    name: mysql-secret
+                    key: password
+              - name: database__connection__host
+                value: mysql-service
+                url: "http://localhost:{{ mysql_port }}"
+              - name: url
+                value: "http://{{ ghost_ip }}/"
+              ports:
+                - containerPort: "{{ g_port }}"   
 
+- name: Get MySQL pod name
+  kubernetes.core.k8s_info:
+    kind: Pod
+    label_selectors:
+      - app = mysql
+  register: mysql_pod
 
+# - name: Create a ghost blog admin
+#   namespace: "{{ namespace }}"
+#   pod: "{{ mysql_pod.resources[0].metadata.name }}"
+#   command: mysql -u root -p -e "update users set name='admin', password='\$2a\$10\$pof6uUwDghgRlV4N1JPz.O9fh/ARBnR8qxu4deNwd5avEjx0NGGKu', email='ghostadmin@ghost.com', status='active' where id=1;"
+#   register: admin_created
+#   until: "admin_created is not failed"
+#   retries: 6
+#   delay: 10

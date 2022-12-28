@@ -1,0 +1,14 @@
+- name: Undeploy mysql service
+  shell: kubectl delete service -n "{{ namespace }}" mysql-service
+
+- name: Undeploy mysql pod
+  shell: kubectl delete deployment -n "{{ namespace }}" mysql-deployment
+
+- name: Undeploy ghost service
+  shell: kubectl delete service -n "{{ namespace }}" ghost-service
+
+- name: Undeploy ghost pod
+  shell: kubectl delete deployment -n "{{ namespace }}" ghost
+
+- name: Delete secret
+  shell: kubectl delete secret -n "{{ namespace }}" mysql-secret

@@ -12,10 +12,12 @@
           app: mysql
           tier: database
       spec:
+        type: ClusterIP
         selector:
           app: mysql
         ports:
           - port: "{{ mysql_port }}" # port number exposed internally in the cluster
+            targetPort: "{{ mysql_port }}" # port that containers are listening on
 
 # Criar PVC para o pod do MySQL
 - name: Create PVC for MySQL pod
@@ -29,7 +31,8 @@
         namespace: "{{ namespace }}"
       spec:
         accessModes:
-        - ReadWriteOnce
+          - ReadWriteOnce
+        storageClassName: standard
         resources:
           requests:
             storage: 20Gi
@@ -62,8 +65,10 @@
           spec:
             containers:
             - name: mysql
-              image: mysql:latest
+              image: mysql:8
               env: # The variables below could be set on a ConfigMap object
+              - name: MYSQL_ALLOW_EMPTY_PASSWORD
+                value: "true"
               - name: MYSQL_DATABASE
                 value: "{{ database }}"
               - name: MYSQL_USER

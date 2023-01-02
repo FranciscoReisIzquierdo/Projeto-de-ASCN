@@ -1,0 +1,16 @@
+---
+- name: Include vault
+  include_vars: secret.yml
+        
+- name: Create secret
+  kubernetes.core.k8s:
+    namespace: "{{ namespace }}"
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: mysql-secret
+      type: Opaque
+      stringData:
+        password: "{{ password }}"
+        rootpassword: "{{ rootpassword }}"

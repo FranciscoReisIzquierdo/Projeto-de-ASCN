@@ -10,8 +10,8 @@
 - name: Create MySQL secret
   hosts: localhost
   gather_facts: false
-  tasks:  
-    - command: kubectl create -f secret.yml -n "{{ namespace }}"
+  roles:
+      - create_secret
 
 - name: Deploy MySQL and Ghost
   hosts: localhost

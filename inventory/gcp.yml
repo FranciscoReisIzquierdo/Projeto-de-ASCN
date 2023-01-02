@@ -31,4 +31,5 @@ all:
   # Additional variables
   
   namespace: namespace-ghost
+  email_mailgun: postmaster@sandbox201fbceaac6940ce812bc5429cb0ec37.mailgun.org
  

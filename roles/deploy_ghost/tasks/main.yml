@@ -76,6 +76,17 @@
                 url: "http://localhost:{{ mysql_port }}"
               - name: url
                 value: "http://{{ ghost_ip }}/"
+              - name: mail__transport
+                value: SMTP
+              - name: mail__options__service
+                value: Mailgun
+              - name: mail__options__auth__user
+                value: "{{ email_mailgun }}"
+              - name: mail__options__auth__pass
+                valueFrom:
+                  secretKeyRef:
+                    name: mysql-secret
+                    key: passwordMailgun
               ports:
                 - containerPort: "{{ g_port }}"   
 

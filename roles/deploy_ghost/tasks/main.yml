@@ -99,7 +99,7 @@
 
 - name: Wait
   wait_for:
-    timeout: 60  
+    timeout: 120  
 
 - name: Create a ghost blog admin
   kubernetes.core.k8s_exec:

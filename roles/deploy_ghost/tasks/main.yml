@@ -99,7 +99,7 @@
 
 - name: Wait
   wait_for:
-    timeout: 120  
+    timeout: 60 
 
 - name: Create a ghost blog admin
   kubernetes.core.k8s_exec:
@@ -110,3 +110,6 @@
   until: "admin_created is not failed"
   retries: 6
   delay: 10
+
+- name: Create dashboards (monitoring)
+  command: gcloud monitoring dashboards create --config-from-file=roles/deploy_ghost/dashboards/dashboards.json

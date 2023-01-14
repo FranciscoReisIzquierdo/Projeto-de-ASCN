@@ -12,3 +12,6 @@
 
 - name: Delete secret
   shell: kubectl delete secret -n "{{ namespace }}" mysql-secret
+
+- name: Delete dashboards
+  shell: gcloud monitoring dashboards delete ghost_deployment_dashboard --quiet
